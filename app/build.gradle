@@ -10,12 +10,54 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
+
+    signingConfigs {
         release {
-            minifyEnabled false
+            storeFile file("brisk.jks")
+            storePassword "123456"
+            keyAlias "brisk"
+            keyPassword "123456"
+        }
+    }
+
+    buildTypes {
+        //开发
+        debug {
+            signingConfig signingConfigs.release
+            buildConfigField "String", "ENV", '"dev"'
+            debuggable true
+        }
+
+        //测试
+        daily {
+            signingConfig signingConfigs.release
+            buildConfigField "String", "ENV", '"test"'
+            debuggable true
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        }
+
+        //线上
+        release {
+            signingConfig signingConfigs.release
+            buildConfigField "String", "ENV", '"release"'
+
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
+    dataBinding {
+        enabled = true
+    }
+
 }
 
 dependencies {
@@ -25,4 +67,36 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    //retrofit+rxjava
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.6'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+
+    //dagger2
+    compile 'com.google.dagger:dagger:2.13'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
+
+    //permission
+    compile 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
+
+    //lifecycle
+    compile 'com.trello.rxlifecycle2:rxlifecycle:2.2.1'
+    compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.2.1'
+    compile 'com.trello.rxlifecycle2:rxlifecycle-android:2.2.1'
+
+    // gson
+    compile 'com.google.code.gson:gson:2.8.2'
+
+    //glide
+    compile 'com.github.bumptech.glide:glide:4.3.1'
+
+    // ViewModel and LiveData
+    compile 'android.arch.lifecycle:extensions:1.1.0'
+
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
 }
